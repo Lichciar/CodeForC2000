@@ -6,24 +6,47 @@
 #Начало: 11 декабря 2015 г. 01:44
 
 #Версия программы
-CodeForC2000Version = '1.0'
+CodeForC2000Version = '1.1'
+
+#Исправлено в ver.1.1
+#--------------------
+#1.Подправлено приветствие.
+#2.Добавлен учёт времени начала, окончания работы, длительность работы.
+#3.Исправил работу сценария, до этого он не работал.
+#4.Оформил вывод результата.
+
+#План работ на ver.1.2
+#---------------------
+#1.Сделать форматированный вывод результата.
+#2.Сделать процентное выполнение работы.
+#3.Оптимизировать циклы перебора внедрением break, замерить изменение во времени выполнения.
+#4.Проверить, влияют ли коменты в программе на её производительность (удалить все коменты и сравнить время выполнения).
+#5.Исправить слово "Программа" на "Сценарий" во всей программе.
+
+#Подключаем модули (в данном случае - модуль времени)
+from time import strftime, localtime, time, gmtime
+
+#Время начала работы программы 
+StartProgramm = time()
 
 #Приветствие
 print ('\n')
-print ('Программа CodeForC2000(C200M) ver.',CodeForC2000Version)
-print ('--------------------------------------------------------')
-print ('|Порядковый номер|Номер перебора\t\t|Код         |')
-print ('--------------------------------------------------------')
+print ('Программа CodeForC2000(C2000M) ver.',CodeForC2000Version)
+print ('Реализована на языке программирования Python v.3.5.1')
+print ('Начало работы программы: ',strftime("%d %B %Y, %H:%M:%S", localtime()))
+print ('---------------------------------------------------------------')
+print ('| Порядковый номер | Номер перебора\t\t| Код         |')
+print ('---------------------------------------------------------------')
 
 #Создадим список Number с цифрами
 Numerals = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 #Порядковый номер
-SerialNumber = 1
+SerialNumber = 1 
 #Номер по перебору
-SortingNumber = 1
+SortingNumber = 1 
 
 #Начнём цикл перебора списка с цифрами PotCX
-#где PotCX (сокращение от Part of thr Code aka 'часть кода') и X = 1 ... 10
+#где PotCX (сокращение от Part of the Code aka 'часть кода') и X = 1 ... 10
 for PotC1 in Numerals:
    for PotC2 in Numerals:
       for PotC3 in Numerals:
@@ -35,18 +58,29 @@ for PotC1 in Numerals:
                         for PotC9 in Numerals:
                            for PotC10 in Numerals:
 
-#Проверяем отсутствие одинаковых цифр в коде
-#Для этого создаем цикл с перебором всех значений
-                              FullCode = [PotC1, PotC2, PotC3, PotC4, PotC5, PotC6, PotC7, PotC8, PotC9, PotC10]
-                              Counter = 9
-                              Coincident = 0
-                              while Counter >= 1:
-                                 MatchCounter = 8
-                                 if FullCode[Counter] == FullCode[MatchCounter]:
-                                    Coincident = 1 
+                              FullCode = [PotC1, PotC2, PotC3, PotC4, PotC5, PotC6, PotC7, PotC8, PotC9, PotC10]	#Собираем код в множество
+                              Counter = 10										#Индекс проверочной цифры 
+                              Coincident = 0										#Индикатор совпадения
+                              
+                              while Counter != 0:									#Цикл перебора проверочной цифры
+                                 MatchCounter = Counter - 1								#Индекс проверяемой цифры 
+                                 while MatchCounter != 0:								#Цикл перебора проверяемых цифр
+                                    if FullCode[Counter - 1] == FullCode[MatchCounter - 1]:                             #Если совпадение,
+                                       Coincident = 1									#взводим флаг индикации 
+                                    MatchCounter -= 1
                                  Counter -= 1
-                                 MatchCounter -= 1
-                              if not Coincident:
-                                 SerialNumber += 1 
-                                 print ('| ',SerialNumber,'\t| ',SortingNumber,'\t| ',FullCode,' |')
-                              SortingNumber += 1
+                              
+                              if not Coincident:									#Если совпадений не найдено
+                                 print ('| ',SerialNumber,'\t\t\t| ',SortingNumber,'\t| ',FullCode,' |')		#выводим результат
+                                 SerialNumber += 1									#Повышаем порядковый номер для следующего кода
+                              SortingNumber += 1									#Повышаем номер по перебору
+
+#Окончание работы
+StopProgramm = time()
+
+#Выводим время окончания
+print ('---------------------------------------------------------------')
+print ('Окончания работы программы: ',strftime("%d %B %Y, %H:%M:%S", localtime()))
+
+#Расчитываем время работы программы и выводим на экран
+print ('Время работы программы: ', strftime("%H:%M:%S", gmtime(StopProgramm - StartProgramm)))
